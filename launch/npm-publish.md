@@ -76,8 +76,8 @@ npm publish
 
 ## Add these fields to package.json before publishing
 ```json
-"repository": { "type": "git", "url": "https://github.com/YOURNAME/leaktrap.git" },
+"repository": { "type": "git", "url": "https://github.com/Goatnuts1/leaktrap.git" },
 "homepage": "https://leaktrap.dev",
-"bugs": "https://github.com/YOURNAME/leaktrap/issues",
+"bugs": "https://github.com/Goatnuts1/leaktrap/issues",
 "author": "YOUR NAME"
 ```

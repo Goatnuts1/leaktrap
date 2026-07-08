@@ -10,9 +10,9 @@
     "start": "node bin/cli.js",
     "test": "node --test test/*.test.js"
   },
-  "repository": { "type": "git", "url": "https://github.com/YOURNAME/leaktrap.git" },
+  "repository": { "type": "git", "url": "https://github.com/Goatnuts1/leaktrap.git" },
   "homepage": "https://leaktrap.dev",
-  "bugs": "https://github.com/YOURNAME/leaktrap/issues",
+  "bugs": "https://github.com/Goatnuts1/leaktrap/issues",
   "author": "Christopher Gautreaux",
   "keywords": [
     "security",
