@@ -21,8 +21,9 @@ if (flag('-h') || flag('--help')) {
                       (critical | high | medium | low). Default: critical
     -h, --help        Show this help
 
-  ${c.bold('Checks')}  exposed API keys · Supabase RLS gaps · unauthenticated
-           endpoints · path traversal · committed secrets · open CORS
+  ${c.bold('Checks')}  exposed API keys · Supabase RLS gaps · Firebase rules ·
+           unauthenticated endpoints · path traversal · committed secrets
+           & DB URLs · open CORS · auth tokens in localStorage
 
   ${c.gray('Free & open source. Auto-fix + monitoring at leaktrap.dev')}
 `);
