@@ -126,14 +126,34 @@
 </div>
 
 <script>
-  // Wire this to your real backend / form service (Formspree, Loops, ConvertKit, etc.).
-  function joinWaitlist(e){
+  // ── Loops waitlist integration ──────────────────────────────────────────
+  // 1. In Loops: Settings → API, or create a "Form" → copy its endpoint URL.
+  //    It looks like: https://app.loops.so/api/newsletter-form/<FORM_ID>
+  // 2. Paste that URL below. No backend needed — Loops accepts the POST directly.
+  const LOOPS_FORM_URL = "https://app.loops.so/api/newsletter-form/YOUR_FORM_ID";
+
+  async function joinWaitlist(e){
     e.preventDefault();
-    var email = document.getElementById('email').value;
-    // TODO: POST `email` to your waitlist endpoint here.
-    try { localStorage.setItem('leaktrap_waitlist', email); } catch(_){}
-    document.getElementById('ok').hidden = false;
-    document.querySelector('form').reset();
+    const email = document.getElementById('email').value.trim();
+    const btn = document.querySelector('button.cta');
+    if (!email) return false;
+    btn.disabled = true; btn.textContent = "Joining…";
+    try {
+      // Loops expects form-urlencoded with an `email` field.
+      await fetch(LOOPS_FORM_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ email, source: "leaktrap.dev", userGroup: "waitlist" }),
+      });
+      document.getElementById('ok').hidden = false;
+      document.querySelector('form').reset();
+    } catch (_) {
+      // Even if the network hiccups, don't lose the lead — stash locally.
+      try { localStorage.setItem('leaktrap_waitlist', email); } catch(_){}
+      document.getElementById('ok').hidden = false;
+    } finally {
+      btn.disabled = false; btn.textContent = "Join the waitlist";
+    }
     return false;
   }
 </script>
