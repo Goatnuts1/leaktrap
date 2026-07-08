@@ -65,9 +65,44 @@ export function lineAt(content, index) {
   return line;
 }
 
+/** Load .leaktrapignore (gitignore-lite): one path/glob per line, `#` comments.
+ *  A trailing `/` matches a directory prefix; `*` is a wildcard. Returns a
+ *  predicate telling you whether a relative path should be skipped. */
+export function loadIgnore(root) {
+  let lines = [];
+  try {
+    lines = readFileSync(join(root, '.leaktrapignore'), 'utf8').split('\n');
+  } catch {
+    return () => false;
+  }
+  const regexes = lines
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'))
+    .map((p) => {
+      const esc = p.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+      // trailing slash → directory prefix match; else substring match
+      return new RegExp(p.endsWith('/') ? `(^|/)${esc}` : esc);
+    });
+  return (rel) => regexes.some((r) => r.test(rel.replace(/\\/g, '/')));
+}
+
+/** Heuristic: is this a test/fixture/example file? Such files commonly contain
+ *  intentionally-fake secrets, so we skip them for the secret checks to avoid
+ *  crying wolf (the thing that erodes trust in a scanner). */
+export function isTestFixture(relPath) {
+  const p = relPath.replace(/\\/g, '/');
+  return (
+    /(^|\/)(tests?|__tests__|__mocks__|spec|specs|e2e|cypress|fixtures?|mocks?|examples?|__fixtures__)\//.test(p) ||
+    /\.(test|spec|stories|fixture|mock|example|sample)\.[a-z]+$/i.test(p) ||
+    /(^|\/)(example|sample)\./i.test(p)
+  );
+}
+
 /** Heuristic: is this file shipped to / runnable in the browser? */
 export function isClientFile(relPath) {
   const p = relPath.replace(/\\/g, '/');
+  // Dev tooling / build scripts / server dirs are never browser-shipped.
+  if (/(^|\/)(scripts?|bin|tools?|migrations?|supabase\/functions|server|api|functions)\//.test(p)) return false;
   if (/(^|\/)(src|app|components|pages|public|client|assets)\//.test(p)) {
     // ...but API routes and server files are NOT client, even under app/ or pages/.
     if (/(^|\/)(pages|app)\/api\//.test(p)) return false;

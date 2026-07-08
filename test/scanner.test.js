@@ -57,3 +57,32 @@ test('flags path traversal from req.query', () => {
   const { findings } = scan(dir);
   assert.ok(findings.some((f) => f.id === 'PATH_TRAVERSAL'));
 });
+
+test('does NOT flag fake secrets in test fixture files', () => {
+  const dir = fixture({ 'test/a.test.js': 'const k = "sk_live_abcd1234efgh5678ijkl";' });
+  const { findings } = scan(dir);
+  assert.ok(!findings.some((f) => f.id === 'SECRET_EXPOSED'), 'test fixtures are skipped');
+});
+
+test('.leaktrapignore suppresses matched paths', () => {
+  const dir = fixture({
+    'src/leak.js': 'const k = "sk_live_abcd1234efgh5678ijkl";',
+    '.leaktrapignore': 'src/leak.js\n',
+  });
+  const { findings } = scan(dir);
+  assert.ok(!findings.some((f) => f.id === 'SECRET_EXPOSED'), 'ignored path is skipped');
+});
+
+test('flags a real service_role key in client code', () => {
+  const dir = fixture({
+    'src/admin.js': 'export const a = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY);',
+  });
+  const { findings } = scan(dir);
+  assert.ok(findings.some((f) => f.id === 'RLS_SERVICE_ROLE_CLIENT'));
+});
+
+test('does NOT flag prose that merely mentions Supabase', () => {
+  const dir = fixture({ 'README.md': 'We use Supabase for auth. Check your Supabase RLS!' });
+  const { findings } = scan(dir);
+  assert.ok(!findings.some((f) => f.id === 'RLS_UNVERIFIABLE'), 'word "supabase" alone should not trigger');
+});

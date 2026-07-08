@@ -12,11 +12,16 @@ export function checkRLS(root, files) {
     const content = read(file);
     if (!content) continue;
 
-    if (/@supabase\/supabase-js|createClient\s*\(|supabase/i.test(content)) usesSupabase = true;
+    // Require actual Supabase SDK usage, not just the word "supabase" (which
+    // shows up in READMEs, marketing copy, and comments).
+    if (/@supabase\/supabase-js|createClient\s*\([^)]*supabase|supabase\s*\.\s*(from|auth|rpc|storage|channel)\s*\(/i.test(content)) {
+      usesSupabase = true;
+    }
 
-    // service_role key reachable by the browser = total RLS bypass.
-    if (isClientFile(rel) && /service_role|SUPABASE_SERVICE_ROLE/i.test(content)) {
-      const idx = content.search(/service_role|SUPABASE_SERVICE_ROLE/i);
+    // service_role key reachable by the browser = total RLS bypass. Require a
+    // key-name form (SUPABASE_SERVICE_ROLE… / serviceRoleKey), not the bare word.
+    if (isClientFile(rel) && /SUPABASE_SERVICE_ROLE|service[_-]?role[_-]?key/i.test(content)) {
+      const idx = content.search(/SUPABASE_SERVICE_ROLE|service[_-]?role[_-]?key/i);
       serviceRoleInClient = { file: rel, line: lineAt(content, idx) };
     }
 

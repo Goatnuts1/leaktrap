@@ -1,5 +1,5 @@
 // Check 1 & 5: exposed API keys / secrets in client code and in the repo.
-import { read, lineAt, isClientFile, finding, SEV, relPath } from '../util.js';
+import { read, lineAt, isClientFile, isTestFixture, finding, SEV, relPath } from '../util.js';
 
 // High-signal secret patterns. Each: name, regex, severity when found in CLIENT code.
 const PATTERNS = [
@@ -32,6 +32,8 @@ export function checkSecrets(root, files) {
   const out = [];
   for (const file of files) {
     const rel = relPath(root, file);
+    // Skip test/fixture/example files — they routinely hold fake keys on purpose.
+    if (isTestFixture(rel)) continue;
     const content = read(file);
     if (!content) continue;
     const client = isClientFile(rel);

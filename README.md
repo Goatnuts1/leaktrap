@@ -60,6 +60,17 @@ Add it to CI so a leak never ships again:
 
 ---
 
+## Ignoring false positives
+
+LeakTrap already skips `test/`, `spec/`, `__mocks__/`, and `*.example.*` files (they're full of intentionally-fake secrets). For anything else, drop a **`.leaktrapignore`** in your project root — one path or glob per line, `#` for comments:
+
+```
+# .leaktrapignore
+scripts/           # a trailing slash matches a directory
+seed-data.js
+docs/*.md
+```
+
 ## Example output
 
 ```
