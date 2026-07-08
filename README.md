@@ -1,6 +1,13 @@
 # LeakTrap 🛡️
 
+[![npm](https://img.shields.io/npm/v/leaktrap?color=3ddc97)](https://www.npmjs.com/package/leaktrap)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![node](https://img.shields.io/badge/node-%3E%3D18-2bb8ff)](https://nodejs.org)
+![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+
 **Scan your AI-built app for the ways vibe-coded apps leak — exposed keys, broken row-level security, missing auth — in plain English.**
+
+> In a scan of 101 public apps built with AI code tools, **68% had a security issue** and **24% exposed a critical secret** — including 1 in 5 shipping their Supabase `service_role` key (full database access) straight to the browser. LeakTrap catches these before your users (or attackers) do.
 
 You built something great on Lovable, Bolt, v0, Replit, or Cursor. Before you send it to real users, run one command:
 
