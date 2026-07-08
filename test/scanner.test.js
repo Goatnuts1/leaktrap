@@ -114,3 +114,19 @@ test('flags an auth token stored in localStorage', () => {
   const { findings } = scan(dir);
   assert.ok(findings.some((f) => f.id === 'TOKEN_IN_LOCALSTORAGE'));
 });
+
+test('catches a raw service_role JWT by decoding it', () => {
+  // payload {"role":"service_role"}
+  const jwt = 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.abcdefghijklmnop';
+  const dir = fixture({ 'src/db.js': `const admin = createClient(url, "${jwt}");` });
+  const { findings } = scan(dir);
+  assert.ok(findings.some((f) => f.id === 'RLS_SERVICE_ROLE_CLIENT'), 'decoded service_role → flagged');
+});
+
+test('does NOT flag the public anon JWT (role: anon)', () => {
+  // payload {"role":"anon"}
+  const jwt = 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYW5vbiJ9.abcdefghijklmnop';
+  const dir = fixture({ 'src/db.js': `const supabase = createClient(url, "${jwt}");` });
+  const { findings } = scan(dir);
+  assert.ok(!findings.some((f) => f.id === 'RLS_SERVICE_ROLE_CLIENT'), 'anon key is public — not flagged');
+});

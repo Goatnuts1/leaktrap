@@ -1,6 +1,6 @@
 # Community seeding posts — LeakTrap
 
-*The #1 rule: lead with the finding, not the product. You did real research (101 apps, 24% critical) — that's inherently interesting and shareable. The tool is the "oh, and I made this" at the end. Posts that pitch first get removed; posts that give value first get upvoted AND convert.*
+*The #1 rule: lead with the finding, not the product. You did real research (101 apps, 29% critical) — that's inherently interesting and shareable. The tool is the "oh, and I made this" at the end. Posts that pitch first get removed; posts that give value first get upvoted AND convert.*
 
 *Sequence: GitHub + npm live → Show HN (the anchor) → then seed these over ~3–4 days, not all at once. Read each community's rules first; several require a "self-promo Saturday" or flair. Reply to every comment.*
 
@@ -18,11 +18,11 @@
 ---
 
 ## 1. r/Supabase  (STRONGEST fit — RLS is their pain)
-**Title:** `I scanned 101 AI-built apps: 21% shipped their service_role key to the browser`
+**Title:** `I scanned 101 AI-built apps: 23% shipped their service_role key to the browser`
 
 > I got curious how often vibe-coded apps leak, so I scanned 101 public repos built with AI tools (Lovable/Bolt fingerprints). The Supabase-specific findings were rough:
 >
-> - **21%** had the `service_role` key reachable in client code — full RLS bypass, read/write on the whole DB.
+> - **23%** had the `service_role` key reachable in client code — full RLS bypass, read/write on the whole DB.
 > - **35%** had at least one `USING (true)` policy (every row, every user).
 > - **15%** created tables with RLS never enabled.
 >
@@ -57,7 +57,7 @@
 ## 4. r/vibecoding
 **Title:** `Vibe-coded 101 apps' worth of security holes so you don't have to — free scanner`
 
-> Vibe coding is amazing but the generators ship insecure defaults. I scanned 101 public AI-built apps: **68% had a security issue, 24% exposed a critical secret** (like a database key in the browser).
+> Vibe coding is amazing but the generators ship insecure defaults. I scanned 101 public AI-built apps: **68% had a security issue, 29% exposed a critical secret** (like a database key in the browser).
 >
 > Made a free CLI that catches the 6 most common ones and tells you exactly what to fix, in plain English — because the whole point of vibe coding is you're not a security engineer:
 >
@@ -73,8 +73,8 @@
 > Quick build-in-public share. I kept seeing "my Stripe key leaked" / "someone wiped my Supabase" threads from people shipping AI-built apps, so I measured it: scanned 101 public repos built with Lovable/Bolt fingerprints.
 >
 > - 68% had ≥1 security issue
-> - 24% had a critical secret exposure
-> - 21% shipped their Supabase service_role key (full DB access) to the browser
+> - 29% had a critical secret exposure
+> - 23% shipped their Supabase service_role key (full DB access) to the browser
 >
 > I only counted 6 high-confidence checks, so it's a floor. Turned it into `npx leaktrap` (free, MIT). The plan is a paid tier later (auto-fix PRs + monitoring) but the CLI stays free.
 >
@@ -85,7 +85,7 @@
 ## 6. r/SaaS  /  r/webdev  /  r/nextjs  (post last, broadest)
 **Title:** `68% of the AI-built apps I scanned had a security issue — made a free scanner`
 
-> Scanned 101 public repos built with AI code tools. 68% had at least one of: an API key in browser code, Supabase RLS off, an unauthenticated write endpoint, path traversal, a committed .env, or wildcard CORS. 24% had a critical secret exposure.
+> Scanned 101 public repos built with AI code tools. 68% had at least one of: an API key in browser code, Supabase RLS off, an unauthenticated write endpoint, path traversal, a committed .env, or wildcard CORS. 29% had a critical secret exposure.
 >
 > Built a free, open-source CLI to catch these in your own app before shipping — plain-English fixes, runs locally:
 >
@@ -102,8 +102,8 @@
 > I scanned 101 public apps built with AI code tools (Lovable, Bolt, v0).
 >
 > 68% had a security hole.
-> 24% exposed a critical secret.
-> 21% shipped their database god-mode key straight to the browser.
+> 29% exposed a critical secret.
+> 23% shipped their database god-mode key straight to the browser.
 >
 > Made a free tool so you can check yours in 10 seconds 🧵
 
@@ -119,7 +119,7 @@
 >
 > That key bypasses ALL row-level security. If it's in your bundle, anyone who opens devtools can read and delete your entire database.
 >
-> 1 in 5 apps I scanned had this. Check yours: `npx leaktrap`
+> nearly 1 in 4 apps I scanned had this. Check yours: `npx leaktrap`
 
 ---
 

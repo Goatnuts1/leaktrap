@@ -1,11 +1,24 @@
 // Check 2: missing / inverted Supabase Row-Level Security — the #1 vibe-code leak.
 import { read, lineAt, isClientFile, finding, SEV, relPath } from '../util.js';
 
+// Decode a Supabase JWT's payload and return its `role` claim, or null.
+// Accurate: a service_role key literally has {"role":"service_role"}; the public
+// anon key has {"role":"anon"} — so this never flags the (safe) anon key.
+const JWT_RE = /\beyJ[A-Za-z0-9_-]{8,}\.([A-Za-z0-9_-]{8,})\.[A-Za-z0-9_-]{8,}/g;
+function jwtRole(payloadSeg) {
+  try {
+    const json = JSON.parse(Buffer.from(payloadSeg, 'base64url').toString('utf8'));
+    return typeof json.role === 'string' ? json.role : null;
+  } catch {
+    return null;
+  }
+}
+
 export function checkRLS(root, files) {
   const out = [];
   let usesSupabase = false;
   const sqlFiles = [];
-  let serviceRoleInClient = null;
+  const serviceRoleSeen = new Set();
 
   for (const file of files) {
     const rel = relPath(root, file).replace(/\\/g, '/');
@@ -18,26 +31,38 @@ export function checkRLS(root, files) {
       usesSupabase = true;
     }
 
-    // service_role key reachable by the browser = total RLS bypass. Require a
-    // key-name form (SUPABASE_SERVICE_ROLE… / serviceRoleKey), not the bare word.
-    if (isClientFile(rel) && /SUPABASE_SERVICE_ROLE|service[_-]?role[_-]?key/i.test(content)) {
-      const idx = content.search(/SUPABASE_SERVICE_ROLE|service[_-]?role[_-]?key/i);
-      serviceRoleInClient = { file: rel, line: lineAt(content, idx) };
+    // Detect service_role keys two ways, both precise:
+    //  (a) decode any JWT and check role === 'service_role' (catches the raw key,
+    //      never flags the public anon key), and
+    //  (b) a key-NAME reference like SUPABASE_SERVICE_ROLE_KEY / serviceRoleKey.
+    const client = isClientFile(rel);
+    let hit = -1;
+    JWT_RE.lastIndex = 0;
+    let jm;
+    while ((jm = JWT_RE.exec(content))) {
+      if (jwtRole(jm[1]) === 'service_role') { hit = jm.index; break; }
+    }
+    if (hit === -1) {
+      const nameMatch = content.search(/SUPABASE_SERVICE_ROLE|service[_-]?role[_-]?key/i);
+      if (nameMatch !== -1) hit = nameMatch;
+    }
+    if (hit !== -1 && !serviceRoleSeen.has(rel)) {
+      serviceRoleSeen.add(rel);
+      out.push(finding({
+        id: 'RLS_SERVICE_ROLE_CLIENT',
+        severity: SEV.CRITICAL,
+        title: client
+          ? 'Supabase service_role key in client-reachable code'
+          : 'Supabase service_role key committed to the repo',
+        file: rel,
+        line: lineAt(content, hit),
+        detail: 'The service_role key bypasses ALL Row-Level Security — it is full read/write on your entire database. '
+          + (client ? 'Here it is reachable by the browser, so anyone who opens devtools can read or delete every user\'s data.' : 'Committed to the repo, anyone with repo access (or git history) has full database control.'),
+        fix: 'Remove service_role from front-end/committed code. Use the public "anon" key in the browser (protected by RLS); keep service_role only in server routes / edge functions and load it from an env var. Then ROTATE the key.',
+      }));
     }
 
     if (/\.sql$/.test(rel) || /migrations?\//.test(rel)) sqlFiles.push({ rel, content });
-  }
-
-  if (serviceRoleInClient) {
-    out.push(finding({
-      id: 'RLS_SERVICE_ROLE_CLIENT',
-      severity: SEV.CRITICAL,
-      title: 'Supabase service_role key used in client code',
-      file: serviceRoleInClient.file,
-      line: serviceRoleInClient.line,
-      detail: 'The service_role key bypasses ALL Row-Level Security. If it is anywhere the browser can reach, anyone can read and write your entire database — every user\'s data.',
-      fix: 'Remove service_role from all front-end code. Use the public "anon" key in the browser (protected by RLS) and keep service_role only in server routes / edge functions. Rotate the key.',
-    }));
   }
 
   // Analyze SQL: tables created without RLS enabled, or policies that allow everyone.
@@ -80,7 +105,7 @@ export function checkRLS(root, files) {
   }
 
   // Supabase in use but no SQL/migrations found at all — can't confirm RLS.
-  if (usesSupabase && sqlFiles.length === 0 && !serviceRoleInClient) {
+  if (usesSupabase && sqlFiles.length === 0 && serviceRoleSeen.size === 0) {
     out.push(finding({
       id: 'RLS_UNVERIFIABLE',
       severity: SEV.MEDIUM,

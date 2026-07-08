@@ -7,8 +7,8 @@ Re-run `fetch-corpus.sh` + `corpus-stats.js` right before posting to refresh.*
 ---
 
 **Title options (A/B — both true):**
-- `Show HN: 24% of AI-built apps I scanned expose a secret key in the browser`
-- `Show HN: 1 in 5 Lovable apps ships its database god-mode key to the browser`
+- `Show HN: 29% of AI-built apps I scanned expose a secret key in the browser`
+- `Show HN: nearly 1 in 4 Lovable apps ships its database god-mode key to the browser`
 - `Show HN: LeakTrap – a free scanner for the ways AI-built apps leak`
 
 ---
@@ -20,8 +20,8 @@ I kept seeing the same story: someone ships an app they built on Lovable/Bolt/Re
 So I scanned **101 public repos** built with these tools (I used the fingerprint files the generators leave behind, and filtered out tooling/clones so it's real apps). The result:
 
 - **68%** had at least one security issue.
-- **24%** had a *critical* one — a secret key or the Supabase `service_role` key sitting in browser-reachable code.
-- **21%** shipped the Supabase `service_role` key specifically — that key bypasses all row-level security, so it's full read/write on the entire database, for anyone who opens devtools.
+- **29%** had a *critical* one — a secret key or the Supabase `service_role` key sitting in browser-reachable code.
+- **23%** shipped the Supabase `service_role` key specifically — that key bypasses all row-level security, so it's full read/write on the entire database, for anyone who opens devtools.
 - 35% had a `USING (true)` RLS policy (everyone can read/write every row); 19% had a hardcoded secret; 37% had wildcard CORS.
 
 To be clear about method: I only counted **six specific, high-confidence checks** — so 68% is a floor, not the ceiling. (Independent testing has put the any-vulnerability rate around 91%.)

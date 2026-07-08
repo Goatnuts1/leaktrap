@@ -2,3 +2,6 @@
 # (e.g. the string "service_role"), so it flags itself. Ignore its internals.
 src/checks/
 scripts/
+
+# local scan corpus (dev only, gitignored)
+corpus/

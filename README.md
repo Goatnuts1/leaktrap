@@ -7,7 +7,7 @@
 
 **Scan your AI-built app for the ways vibe-coded apps leak — exposed keys, broken row-level security, missing auth — in plain English.**
 
-> In a scan of 101 public apps built with AI code tools, **68% had a security issue** and **24% exposed a critical secret** — including 1 in 5 shipping their Supabase `service_role` key (full database access) straight to the browser. LeakTrap catches these before your users (or attackers) do.
+> In a scan of 101 public apps built with AI code tools, **68% had a security issue** and **29% exposed a critical secret** — including nearly 1 in 4 shipping their Supabase `service_role` key (full database access) straight to the browser. LeakTrap catches these before your users (or attackers) do.
 
 You built something great on Lovable, Bolt, v0, Replit, or Cursor. Before you send it to real users, run one command:
 

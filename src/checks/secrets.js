@@ -12,7 +12,6 @@ const PATTERNS = [
   { name: 'Google API key', re: /\bAIza[0-9A-Za-z_-]{35}\b/g, sev: SEV.HIGH },
   { name: 'GitHub token', re: /\bgh[posru]_[A-Za-z0-9]{36,}\b/g, sev: SEV.CRITICAL },
   { name: 'Slack token', re: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/g, sev: SEV.HIGH },
-  { name: 'Supabase service_role JWT', re: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, sev: SEV.CRITICAL, guard: /service_role/ },
   { name: 'Generic private key block', re: /-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----/g, sev: SEV.CRITICAL },
   { name: 'Database connection string with password', re: /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqps?):\/\/[^\s:@'"]+:[^\s@'"]+@[^\s'"/]+/gi, sev: SEV.CRITICAL },
   { name: 'Hardcoded bearer/secret assignment', re: /(?:api[_-]?key|secret|password|token)\s*[:=]\s*["'][A-Za-z0-9_\-]{16,}["']/gi, sev: SEV.HIGH },
