@@ -14,6 +14,7 @@ const PATTERNS = [
   { name: 'Slack token', re: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/g, sev: SEV.HIGH },
   { name: 'Supabase service_role JWT', re: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, sev: SEV.CRITICAL, guard: /service_role/ },
   { name: 'Generic private key block', re: /-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----/g, sev: SEV.CRITICAL },
+  { name: 'Database connection string with password', re: /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqps?):\/\/[^\s:@'"]+:[^\s@'"]+@[^\s'"/]+/gi, sev: SEV.CRITICAL },
   { name: 'Hardcoded bearer/secret assignment', re: /(?:api[_-]?key|secret|password|token)\s*[:=]\s*["'][A-Za-z0-9_\-]{16,}["']/gi, sev: SEV.HIGH },
 ];
 
@@ -26,6 +27,14 @@ const ALLOWLIST = [
 
 function isAllowlisted(line) {
   return ALLOWLIST.some((re) => re.test(line));
+}
+
+// Firebase's web apiKey (AIza…) is PUBLIC by design — it identifies the project,
+// it is not a secret. Flagging it is the #1 false positive that makes a scanner
+// look clueless about Firebase. Suppress AIza keys inside a Firebase config.
+const FIREBASE_CTX = /firebaseConfig|initializeApp|authDomain|messagingSenderId|storageBucket|measurementId|appId\s*:/i;
+function isFirebasePublicKey(match, content) {
+  return /AIza/.test(match) && FIREBASE_CTX.test(content);
 }
 
 export function checkSecrets(root, files) {
@@ -47,6 +56,7 @@ export function checkSecrets(root, files) {
         const lineText = content.split('\n')[ln - 1] || '';
         if (p.guard && !p.guard.test(lineText) && !p.guard.test(content.slice(Math.max(0, m.index - 200), m.index))) continue;
         if (isAllowlisted(lineText)) continue;
+        if (isFirebasePublicKey(m[0], content)) continue;
 
         // Severity is worse when the secret is reachable by the browser.
         let sev = p.sev;

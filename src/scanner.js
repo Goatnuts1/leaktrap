@@ -5,6 +5,8 @@ import { checkRLS } from './checks/rls.js';
 import { checkAuth } from './checks/auth.js';
 import { checkPathTraversal } from './checks/pathTraversal.js';
 import { checkCORS } from './checks/cors.js';
+import { checkFirebase } from './checks/firebase.js';
+import { checkClientStorage } from './checks/clientStorage.js';
 
 export function scan(root) {
   const all = walk(root);
@@ -22,6 +24,8 @@ export function scan(root) {
     ...checkAuth(root, files),
     ...checkPathTraversal(root, files),
     ...checkCORS(root, files),
+    ...checkFirebase(root, files),
+    ...checkClientStorage(root, files),
   ];
   // Stable sort: most severe first.
   const order = { critical: 0, high: 1, medium: 2, low: 3 };

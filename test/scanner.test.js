@@ -86,3 +86,31 @@ test('does NOT flag prose that merely mentions Supabase', () => {
   const { findings } = scan(dir);
   assert.ok(!findings.some((f) => f.id === 'RLS_UNVERIFIABLE'), 'word "supabase" alone should not trigger');
 });
+
+test('flags a public Firebase write rule (allow …: if true)', () => {
+  const dir = fixture({
+    'firestore.rules': "rules_version = '2';\nmatch /{d=**} { allow read, write: if true; }",
+  });
+  const { findings } = scan(dir);
+  assert.ok(findings.some((f) => f.id === 'FIREBASE_RULES_PUBLIC_WRITE'));
+});
+
+test('does NOT flag the public Firebase web apiKey', () => {
+  const dir = fixture({
+    'src/firebase.js': 'const firebaseConfig = { apiKey: "AIzaSyABCDEF1234567890abcdefGHIJKLMNOPq", authDomain: "x.firebaseapp.com" };',
+  });
+  const { findings } = scan(dir);
+  assert.ok(!findings.some((f) => f.id === 'SECRET_EXPOSED'), 'Firebase apiKey is public by design');
+});
+
+test('flags a DB connection string with a password', () => {
+  const dir = fixture({ 'src/db.js': 'const url = "postgres://admin:hunter2@db.example.com:5432/prod";' });
+  const { findings } = scan(dir);
+  assert.ok(findings.some((f) => f.id === 'SECRET_EXPOSED'));
+});
+
+test('flags an auth token stored in localStorage', () => {
+  const dir = fixture({ 'src/auth.js': 'localStorage.setItem("access_token", t);' });
+  const { findings } = scan(dir);
+  assert.ok(findings.some((f) => f.id === 'TOKEN_IN_LOCALSTORAGE'));
+});

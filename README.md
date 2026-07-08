@@ -33,12 +33,14 @@ The tools that catch these (Snyk, Veracode) are built and priced for security en
 |---|-------|----------------|
 | 1 | **Exposed API keys in browser code** | A `sk_live_…` in your front-end = anyone can spend your money |
 | 2 | **Supabase Row-Level Security gaps** | No RLS = your whole database is public via the anon key |
-| 3 | **Unauthenticated endpoints** | A write route with no auth = anyone can call it directly |
-| 4 | **Path traversal** | `../../.env` in a file path = attacker reads your secrets |
-| 5 | **Committed secrets** | Keys in `.env` or source that got committed to git |
-| 6 | **Open CORS** | `Origin: *` + credentials = other sites act as your users |
+| 3 | **Firebase security rules** | `allow read, write: if true` = anyone can read or wipe your DB |
+| 4 | **Unauthenticated endpoints** | A write route with no auth = anyone can call it directly |
+| 5 | **Path traversal** | `../../.env` in a file path = attacker reads your secrets |
+| 6 | **Committed secrets & DB URLs** | Keys — or `postgres://user:pass@…` — in source or `.env` |
+| 7 | **Open CORS** | `Origin: *` + credentials = other sites act as your users |
+| 8 | **Auth tokens in localStorage** | Any XSS on your page can steal the token and impersonate the user |
 
-It's tuned for the **vibe-code failure modes specifically** — high signal, low noise. Public/publishable keys (`pk_live_`, `NEXT_PUBLIC_`, anon keys) are allowlisted so you don't get false alarms.
+It's tuned for the **vibe-code failure modes specifically** — high signal, low noise. Public keys that are *supposed* to be in client code (Stripe `pk_live_`, `NEXT_PUBLIC_`, Supabase anon, **Firebase `apiKey`**) are allowlisted so you don't get false alarms.
 
 ---
 

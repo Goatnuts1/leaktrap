@@ -12,7 +12,7 @@ const SKIP_DIRS = new Set([
 const TEXT_EXT = new Set([
   '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.vue', '.svelte',
   '.json', '.env', '.sql', '.html', '.astro', '.py', '.rb', '.go',
-  '.yml', '.yaml', '.toml', '.sh',
+  '.yml', '.yaml', '.toml', '.sh', '.rules',
 ]);
 
 const MAX_FILE_BYTES = 1_500_000; // skip huge bundles/minified blobs
