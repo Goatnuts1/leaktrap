@@ -1,0 +1,37 @@
+{
+  "name": "leaktrap",
+  "version": "0.1.0",
+  "description": "Scan your AI-built app for the ways vibe-coded apps leak — exposed keys, broken RLS, missing auth — in plain English.",
+  "type": "module",
+  "bin": {
+    "leaktrap": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js",
+    "test": "node --test test/*.test.js"
+  },
+  "repository": { "type": "git", "url": "https://github.com/YOURNAME/leaktrap.git" },
+  "homepage": "https://leaktrap.dev",
+  "bugs": "https://github.com/YOURNAME/leaktrap/issues",
+  "author": "Christopher Gautreaux",
+  "keywords": [
+    "security",
+    "vibe-coding",
+    "lovable",
+    "bolt",
+    "supabase",
+    "scanner",
+    "api-keys",
+    "rls",
+    "audit"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ]
+}

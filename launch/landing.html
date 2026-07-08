@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeakTrap — is your AI-built app safe to ship?</title>
+<meta name="description" content="Scan your Lovable, Bolt, or Supabase app for exposed keys, broken RLS, and missing auth — in plain English. Free CLI: npx leaktrap">
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#111823; --ink:#e7edf3; --soft:#9fb0c0; --faint:#5f7488;
+    --line:#1e2a38; --accent:#3ddc97; --accent2:#2bb8ff; --danger:#ff5c6c;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{padding:64px 0 20px;text-align:center}
+  .badge{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:6px 14px;margin-bottom:24px}
+  h1{font-size:clamp(30px,5.5vw,50px);line-height:1.08;margin:0 0 18px;letter-spacing:-.02em}
+  h1 .g{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:19px;color:var(--soft);max-width:60ch;margin:0 auto 28px}
+  .cmd{font-family:var(--mono);font-size:17px;background:#000;border:1px solid var(--line);border-radius:10px;padding:14px 18px;display:inline-flex;gap:10px;align-items:center;color:var(--ink)}
+  .cmd .p{color:var(--accent)}
+  .cmd button{font-family:var(--mono);font-size:12px;background:var(--line);color:var(--soft);border:0;border-radius:6px;padding:5px 10px;cursor:pointer}
+  .sub{color:var(--faint);font-size:14px;margin-top:12px}
+
+  .term{background:#05080c;border:1px solid var(--line);border-radius:12px;margin:44px 0;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .term .bar{background:#0d1420;padding:10px 14px;display:flex;gap:7px;align-items:center;border-bottom:1px solid var(--line)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .term pre{margin:0;padding:18px 20px;font-family:var(--mono);font-size:13.5px;line-height:1.7;overflow-x:auto;color:#cdd9e5}
+  .red{color:var(--danger);font-weight:600}.grn{color:var(--accent)}.yel{color:#ffce56}.gry{color:var(--faint)}.cya{color:var(--accent2)}
+
+  section{padding:40px 0;border-top:1px solid var(--line)}
+  h2{font-size:26px;margin:0 0 22px;letter-spacing:-.01em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card p{margin:0;color:var(--soft);font-size:14.5px}
+  .card .n{font-family:var(--mono);color:var(--accent);font-size:12px}
+
+  .waitlist{background:linear-gradient(180deg,var(--panel),#0c131d);border:1px solid var(--line);border-radius:16px;padding:34px;text-align:center;margin:40px 0}
+  .waitlist h2{margin-bottom:8px}
+  .waitlist p{color:var(--soft);max-width:52ch;margin:0 auto 22px}
+  form{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  input[type=email]{flex:1;min-width:220px;background:#05080c;border:1px solid var(--line);border-radius:10px;padding:13px 15px;color:var(--ink);font-size:15px}
+  input[type=email]:focus{outline:2px solid var(--accent2);outline-offset:1px}
+  button.cta{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04120b;border:0;border-radius:10px;padding:13px 22px;font-weight:700;font-size:15px;cursor:pointer}
+  .ok{color:var(--accent);font-weight:600;margin-top:14px}
+  footer{padding:40px 0 60px;color:var(--faint);font-size:14px;text-align:center;border-top:1px solid var(--line)}
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .tier{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .tier .price{font-size:24px;font-weight:700;margin:6px 0}
+  .tier.free{border-color:var(--accent)}
+  .tier .price .per{font-size:14px;color:var(--faint);font-weight:400}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="badge">Free · open source · runs locally</span>
+    <h1>Is your AI-built app <span class="g">safe to ship?</span></h1>
+    <p class="lede">You built it on Lovable, Bolt, v0, or Supabase in a weekend. Before real users show up, check it for the leaks that bite vibe-coded apps — exposed keys, open databases, missing auth.</p>
+    <div class="cmd"><span class="p">$</span> npx leaktrap <button onclick="navigator.clipboard.writeText('npx leaktrap')">copy</button></div>
+    <div class="sub">No install. No signup. Your code never leaves your machine.</div>
+  </header>
+
+  <div class="term" aria-hidden="true">
+    <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></div>
+<pre>  <span class="gry">LeakTrap — production-readiness scan</span>
+
+  <span class="red">🔴  Score: 0/100  —  Do not ship</span>
+
+  <span class="red">2 critical</span>   <span class="red">6 high</span>   <span class="yel">0 medium</span>   <span class="gry">0 low</span>
+  ────────────────────────────────────────────
+  <span class="red">1. [CRITICAL]</span> Stripe live secret key in browser code
+     <span class="cya">src/config.js:1</span>
+     Anyone who views your site's source can spend your money.
+     <span class="grn">Fix:</span> Move to a server route, use an env var, rotate the key.
+
+  <span class="red">2. [HIGH]</span> Table "profiles" has Row-Level Security OFF
+     <span class="cya">supabase/migrations/001_init.sql:1</span>
+     Your whole table is readable via the public anon key.
+     <span class="grn">Fix:</span> ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;</pre>
+  </div>
+
+  <section>
+    <h2>What it checks</h2>
+    <div class="grid">
+      <div class="card"><div class="n">01</div><h3>Exposed API keys</h3><p>Secret keys shipped to the browser where anyone can grab them.</p></div>
+      <div class="card"><div class="n">02</div><h3>Supabase RLS gaps</h3><p>Tables with row-level security off — the #1 vibe-code data leak.</p></div>
+      <div class="card"><div class="n">03</div><h3>Unauthenticated endpoints</h3><p>Write routes anyone can call directly, bypassing your app.</p></div>
+      <div class="card"><div class="n">04</div><h3>Path traversal</h3><p>User input in file paths that can read <code>../../.env</code>.</p></div>
+      <div class="card"><div class="n">05</div><h3>Committed secrets</h3><p>Keys sitting in <code>.env</code> or source that got pushed to git.</p></div>
+      <div class="card"><div class="n">06</div><h3>Open CORS</h3><p>Wildcard origins that let other sites act as your users.</p></div>
+    </div>
+  </section>
+
+  <div class="waitlist" id="waitlist">
+    <h2>Want it to run itself?</h2>
+    <p>The free CLI catches leaks when you remember to run it. Get on the list for <strong>auto-fix PRs</strong> and <strong>monitoring on every push</strong> — so a leak never sneaks back in.</p>
+    <form onsubmit="return joinWaitlist(event)">
+      <input type="email" id="email" placeholder="you@example.com" required aria-label="Email">
+      <button class="cta" type="submit">Join the waitlist</button>
+    </form>
+    <div class="ok" id="ok" hidden>✓ You're on the list. We'll be in touch.</div>
+  </div>
+
+  <section>
+    <h2>Pricing</h2>
+    <div class="tiers">
+      <div class="tier free"><div class="n" style="font-family:var(--mono);color:var(--accent);font-size:12px">CLI</div><div class="price">Free<span class="per"> forever</span></div><p style="color:var(--soft);font-size:14px;margin:0">Full scanner. Local. Open source.</p></div>
+      <div class="tier"><div class="n" style="font-family:var(--mono);color:var(--faint);font-size:12px">FIX + MONITOR</div><div class="price">$29<span class="per">/mo</span></div><p style="color:var(--soft);font-size:14px;margin:0">Auto-fix PRs + re-scan on every push.</p></div>
+      <div class="tier"><div class="n" style="font-family:var(--mono);color:var(--faint);font-size:12px">AGENCY</div><div class="price">$199<span class="per">/mo</span></div><p style="color:var(--soft);font-size:14px;margin:0">Multiple projects + client-ready reports.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    LeakTrap is a first-line check, not a full audit. Findings are prioritized signals — fix the criticals and ship with more confidence.<br>
+    <a href="https://github.com/">GitHub</a> · MIT licensed · Built for people who ship.
+  </footer>
+
+</div>
+
+<script>
+  // Wire this to your real backend / form service (Formspree, Loops, ConvertKit, etc.).
+  function joinWaitlist(e){
+    e.preventDefault();
+    var email = document.getElementById('email').value;
+    // TODO: POST `email` to your waitlist endpoint here.
+    try { localStorage.setItem('leaktrap_waitlist', email); } catch(_){}
+    document.getElementById('ok').hidden = false;
+    document.querySelector('form').reset();
+    return false;
+  }
+</script>
+</body>
+</html>
