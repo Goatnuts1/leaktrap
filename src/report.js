@@ -46,7 +46,7 @@ export function renderText(root, result) {
 
   if (findings.length === 0) {
     lines.push(c.green('  No issues found by the current checks. '));
-    lines.push(c.gray('  (LeakTrap checks 6 common vibe-code leaks; it is not a full audit.)'));
+    lines.push(c.gray('  (LeakTrap checks 8 common vibe-code leaks; it is not a full audit.)'));
     lines.push('');
     return lines.join('\n');
   }
