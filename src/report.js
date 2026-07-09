@@ -32,7 +32,7 @@ export function renderText(root, result) {
   const lines = [];
   lines.push('');
   lines.push(c.bold('  LeakTrap — production-readiness scan'));
-  lines.push(c.gray(`  ${files} files scanned in ${root}`));
+  lines.push(c.gray(`  ${files} file${files === 1 ? '' : 's'} scanned in ${root}`));
   lines.push('');
   lines.push(`  ${g.emoji}  Score: ${g.color(c.bold(`${s}/100`))}  —  ${g.color(g.label)}`);
   lines.push('');
