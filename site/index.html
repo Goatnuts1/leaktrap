@@ -63,7 +63,8 @@
   <header>
     <span class="badge">Free · open source · runs locally</span>
     <h1>Is your AI-built app <span class="g">safe to ship?</span></h1>
-    <p class="lede">You built it on Lovable, Bolt, v0, or Supabase in a weekend. Before real users show up, check it for the leaks that bite vibe-coded apps — exposed keys, open databases, missing auth.</p>
+    <p class="lede">You built it on Lovable, Bolt, v0, Supabase, or Firebase in a weekend. Before real users show up, check it for the leaks that bite vibe-coded apps — exposed keys, open databases, missing auth.</p>
+    <p class="lede" style="font-size:16px;color:var(--faint);margin-top:-14px">In a scan of 101 AI-built apps, <strong style="color:var(--soft)">68% had a security issue</strong> and <strong style="color:var(--soft)">1 in 4 shipped their database key to the browser</strong>.</p>
     <div class="cmd"><span class="p">$</span> npx leaktrap <button onclick="navigator.clipboard.writeText('npx leaktrap')">copy</button></div>
     <div class="sub">No install. No signup. Your code never leaves your machine.</div>
   </header>
@@ -92,10 +93,12 @@
     <div class="grid">
       <div class="card"><div class="n">01</div><h3>Exposed API keys</h3><p>Secret keys shipped to the browser where anyone can grab them.</p></div>
       <div class="card"><div class="n">02</div><h3>Supabase RLS gaps</h3><p>Tables with row-level security off — the #1 vibe-code data leak.</p></div>
-      <div class="card"><div class="n">03</div><h3>Unauthenticated endpoints</h3><p>Write routes anyone can call directly, bypassing your app.</p></div>
-      <div class="card"><div class="n">04</div><h3>Path traversal</h3><p>User input in file paths that can read <code>../../.env</code>.</p></div>
-      <div class="card"><div class="n">05</div><h3>Committed secrets</h3><p>Keys sitting in <code>.env</code> or source that got pushed to git.</p></div>
-      <div class="card"><div class="n">06</div><h3>Open CORS</h3><p>Wildcard origins that let other sites act as your users.</p></div>
+      <div class="card"><div class="n">03</div><h3>Firebase rules</h3><p><code>allow read, write: if true</code> — anyone can read or wipe your DB.</p></div>
+      <div class="card"><div class="n">04</div><h3>Unauthenticated endpoints</h3><p>Write routes anyone can call directly, bypassing your app.</p></div>
+      <div class="card"><div class="n">05</div><h3>Path traversal</h3><p>User input in file paths that can read <code>../../.env</code>.</p></div>
+      <div class="card"><div class="n">06</div><h3>Committed secrets &amp; DB URLs</h3><p>Keys — or <code>postgres://user:pass@…</code> — pushed to git.</p></div>
+      <div class="card"><div class="n">07</div><h3>Open CORS</h3><p>Wildcard origins that let other sites act as your users.</p></div>
+      <div class="card"><div class="n">08</div><h3>Tokens in localStorage</h3><p>Auth tokens any XSS on your page can steal to impersonate users.</p></div>
     </div>
   </section>
 
