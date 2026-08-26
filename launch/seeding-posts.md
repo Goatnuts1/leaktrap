@@ -1,6 +1,6 @@
 # Community seeding posts — LeakTrap
 
-*The #1 rule: lead with the finding, not the product. You did real research (101 apps, 29% critical) — that's inherently interesting and shareable. The tool is the "oh, and I made this" at the end. Posts that pitch first get removed; posts that give value first get upvoted AND convert.*
+*The #1 rule: lead with the finding, not the product. You did real research (104 apps, 28% critical) — that's inherently interesting and shareable. The tool is the "oh, and I made this" at the end. Posts that pitch first get removed; posts that give value first get upvoted AND convert.*
 
 *Sequence: GitHub + npm live → Show HN (the anchor) → then seed these over ~3–4 days, not all at once. Read each community's rules first; several require a "self-promo Saturday" or flair. Reply to every comment.*
 
@@ -18,13 +18,13 @@
 ---
 
 ## 1. r/Supabase  (STRONGEST fit — RLS is their pain)
-**Title:** `I scanned 101 AI-built apps: 23% shipped their service_role key to the browser`
+**Title:** `I scanned 104 AI-built apps: 20% shipped their service_role key to the browser`
 
-> I got curious how often vibe-coded apps leak, so I scanned 101 public repos built with AI tools (Lovable/Bolt fingerprints). The Supabase-specific findings were rough:
+> I got curious how often vibe-coded apps leak, so I scanned 104 public repos built with AI tools (Lovable fingerprints, 26 Aug 2026). The Supabase-specific findings were rough:
 >
-> - **23%** had the `service_role` key reachable in client code — full RLS bypass, read/write on the whole DB.
-> - **35%** had at least one `USING (true)` policy (every row, every user).
-> - **15%** created tables with RLS never enabled.
+> - **20%** had the `service_role` key reachable in client code — full RLS bypass, read/write on the whole DB.
+> - **30%** had at least one `USING (true)` policy (every row, every user).
+> - **14%** created tables with RLS never enabled.
 >
 > The pattern is almost always the same: the generator wires up Supabase with the anon key correctly, then somewhere a dev pastes the service_role key into a `.ts` file to "make it work," and it ends up in the bundle.
 >
@@ -37,7 +37,7 @@
 ## 2. Lovable Discord / community
 *(Tone: peer helping peers, not a vendor. Post in #show-and-tell or #resources, NOT #general spam. Check if self-promo is allowed; if unsure, ask a mod.)*
 
-> Hey all — I love what Lovable lets you ship, but I noticed a lot of apps go live with security gaps the generator doesn't warn about (keys in the client, Supabase RLS off, etc.). I scanned ~100 public Lovable-built repos and ~2 in 3 had at least one issue.
+> Hey all — I love what Lovable lets you ship, but I noticed a lot of apps go live with security gaps the generator doesn't warn about (keys in the client, Supabase RLS off, etc.). I scanned 104 public Lovable-built repos and 63% had at least one issue.
 >
 > So I made a free tool that checks your app for the 6 most common ones and explains each fix in plain English — no security background needed:
 >
@@ -48,7 +48,7 @@
 ---
 
 ## 3. Bolt.new / StackBlitz Discord
-> Built a free `npx` tool that scans Bolt-built apps for the stuff that leaks in production — exposed API keys, missing auth on endpoints, open CORS, Supabase RLS gaps. Scanned 100 public AI-built repos and 68% had at least one issue, so this is common, not a you-problem.
+> Built a free `npx` tool that scans Bolt-built apps for the stuff that leaks in production — exposed API keys, missing auth on endpoints, open CORS, Supabase RLS gaps. Scanned 104 public AI-built repos and 63% had at least one issue, so this is common, not a you-problem.
 >
 > `npx leaktrap` — local, open source, plain-English fixes. Feedback welcome, especially false positives. [link]
 
@@ -57,7 +57,7 @@
 ## 4. r/vibecoding
 **Title:** `Vibe-coded 101 apps' worth of security holes so you don't have to — free scanner`
 
-> Vibe coding is amazing but the generators ship insecure defaults. I scanned 101 public AI-built apps: **68% had a security issue, 29% exposed a critical secret** (like a database key in the browser).
+> Vibe coding is amazing but the generators ship insecure defaults. I scanned 104 public AI-built apps (26 Aug 2026): **63% had a security issue, 28% had a critical one** (like a database key in the browser).
 >
 > Made a free CLI that catches the 6 most common ones and tells you exactly what to fix, in plain English — because the whole point of vibe coding is you're not a security engineer:
 >
@@ -68,13 +68,13 @@
 ---
 
 ## 5. Indie Hackers
-**Title:** `I scanned 101 AI-built apps for security holes — here's what I found (and the free tool)`
+**Title:** `I scanned 104 AI-built apps for security holes — here's what I found (and the free tool)`
 
-> Quick build-in-public share. I kept seeing "my Stripe key leaked" / "someone wiped my Supabase" threads from people shipping AI-built apps, so I measured it: scanned 101 public repos built with Lovable/Bolt fingerprints.
+> Quick build-in-public share. I kept seeing "my Stripe key leaked" / "someone wiped my Supabase" threads from people shipping AI-built apps, so I measured it: scanned 104 public repos built with Lovable fingerprints (26 Aug 2026).
 >
-> - 68% had ≥1 security issue
-> - 29% had a critical secret exposure
-> - 23% shipped their Supabase service_role key (full DB access) to the browser
+> - 63% had ≥1 security issue
+> - 28% had a critical finding
+> - 20% shipped their Supabase service_role key (full DB access) to the browser
 >
 > I only counted 6 high-confidence checks, so it's a floor. Turned it into `npx leaktrap` (free, MIT). The plan is a paid tier later (auto-fix PRs + monitoring) but the CLI stays free.
 >
@@ -83,9 +83,9 @@
 ---
 
 ## 6. r/SaaS  /  r/webdev  /  r/nextjs  (post last, broadest)
-**Title:** `68% of the AI-built apps I scanned had a security issue — made a free scanner`
+**Title:** `63% of the AI-built apps I scanned had a security issue — made a free scanner`
 
-> Scanned 101 public repos built with AI code tools. 68% had at least one of: an API key in browser code, Supabase RLS off, an unauthenticated write endpoint, path traversal, a committed .env, or wildcard CORS. 29% had a critical secret exposure.
+> Scanned 104 public repos built with AI code tools (26 Aug 2026). 63% had at least one of: an API key in browser code, Supabase RLS off, an unauthenticated write endpoint, path traversal, a committed .env, or wildcard CORS. 28% had a critical finding.
 >
 > Built a free, open-source CLI to catch these in your own app before shipping — plain-English fixes, runs locally:
 >
@@ -99,11 +99,11 @@
 
 ## 7. X / Twitter  (thread — no personal brand needed; the data carries it)
 **Tweet 1:**
-> I scanned 101 public apps built with AI code tools (Lovable, Bolt, v0).
+> I scanned 104 public apps built with AI code tools.
 >
-> 68% had a security hole.
-> 29% exposed a critical secret.
-> 23% shipped their database god-mode key straight to the browser.
+> 63% had a security hole.
+> 28% had a critical one.
+> 1 in 5 shipped their database god-mode key straight to the browser.
 >
 > Made a free tool so you can check yours in 10 seconds 🧵
 
@@ -119,7 +119,7 @@
 >
 > That key bypasses ALL row-level security. If it's in your bundle, anyone who opens devtools can read and delete your entire database.
 >
-> nearly 1 in 4 apps I scanned had this. Check yours: `npx leaktrap`
+> 1 in 5 apps I scanned had this. Check yours: `npx leaktrap`
 
 ---
 

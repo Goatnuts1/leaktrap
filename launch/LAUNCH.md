@@ -6,7 +6,7 @@
 
 ## Phase 0 — Refresh the number (30 min)
 - [ ] `bash scripts/fetch-corpus.sh 60` then `node scripts/corpus-stats.js ./corpus`
-- [ ] Update the stat in `show-hn.md`, `product-hunt.md`, `seeding-posts.md`, `README.md` if it moved. (Current: 68% any / 24% critical, n=101.)
+- [ ] Update the stat in `show-hn.md`, `product-hunt.md`, `seeding-posts.md`, `README.md` if it moved. (Current: 63% any / 28% critical / 20% service_role, n=104 (26 Aug 2026).)
 
 ## Phase 1 — Reserve names (do FIRST, before any public post)
 - [ ] `npm view leaktrap` — grab the name (or pick an alt). → `npm-publish.md`
