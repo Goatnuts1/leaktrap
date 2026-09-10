@@ -24,20 +24,23 @@ So I scanned **104 public repos** built with these tools (I used the fingerprint
 - **20%** shipped the Supabase `service_role` key specifically — that key bypasses all row-level security, so it's full read/write on the entire database, for anyone who opens devtools.
 - 30% had a `USING (true)` RLS policy (everyone can read/write every row); 23% had a hardcoded secret; 38% had wildcard CORS.
 
-To be clear about method: I only counted **six specific, high-confidence checks** — so 63% is a floor, not the ceiling. (Independent testing has put the any-vulnerability rate around 91%.)
+To be clear about method: I only counted **eight specific, high-confidence checks** — so 63% is a floor, not the ceiling. (Independent testing has put the any-vulnerability rate around 91%.)
 
-LeakTrap is a zero-dependency CLI that checks for exactly those six failure modes and explains each in plain English, because the person shipping these apps usually isn't a security engineer:
+LeakTrap is a zero-dependency CLI that checks for exactly those eight failure modes and explains each in plain English, because the person shipping these apps usually isn't a security engineer:
 
     npx leaktrap
 
 It runs locally, your code never leaves your machine, and it's MIT-licensed. Publishable/anon keys are allowlisted so it doesn't cry wolf.
 
-It's deliberately NOT a full SAST tool — Snyk/Semgrep exist and are great, but they're built and priced for security teams, and they bury the 6 things that actually bite vibe-coders under 200 that don't. I wanted the "is this safe to ship, and what exactly do I fix" answer in 10 seconds.
+It's deliberately NOT a full SAST tool — Snyk/Semgrep exist and are great, but they're built and priced for security teams, and they bury the 8 things that actually bite vibe-coders under 200 that don't. I wanted the "is this safe to ship, and what exactly do I fix" answer in 10 seconds.
 
-Repo: [github link]. Would love feedback on false positives and on which checks to add next (I'm weighing: exposed Firebase rules, SSRF in fetch(), and a Supabase-specific RLS deep check).
+Repo: https://github.com/Goatnuts1/leaktrap
+Site: https://leaktrap.dev
+
+Would love feedback on false positives and on which checks to add next (SSRF in fetch(), deeper Supabase RLS, Clerk/NextAuth).
 
 *(Honesty note for the thread: heuristic/regex-based, so it's precision-over-recall by design — it will miss things a real audit catches. Roadmap includes a hosted version with auto-fix PRs + monitoring, but the CLI is and will stay free and open source.)*
 
 ---
 
-**Timing:** Post Tue–Thu, ~8–9am ET. Reply to every comment for the first 4 hours. Expect (and welcome) "just use Semgrep" — answer with the plain-English/6-checks-that-matter positioning, not defensiveness.
+**Timing:** Post Tue–Thu, ~8–9am ET. Reply to every comment for the first 4 hours. Expect (and welcome) "just use Semgrep" — answer with the plain-English/8-checks-that-matter positioning, not defensiveness.
